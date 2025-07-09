@@ -1,70 +1,87 @@
-# Getting Started with Create React App
+# AddLife Email Verification Web App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A simple React web app for email verification that works with your AddLife backend.
 
-## Available Scripts
+## Setup Instructions
 
-In the project directory, you can run:
+### 1. Install Dependencies
+```bash
+npm install
+```
 
-### `npm start`
+### 2. Update Backend URL
+Before deploying, update the backend URL in `src/VerifyEmail.js`:
+- Replace `https://YOUR-BACKEND-URL` with your actual backend URL
+- Example: `https://your-backend.herokuapp.com` or `https://api.addlife.com`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 3. Test Locally
+```bash
+npm start
+```
+Visit `http://localhost:3000/verify-email?token=test` to test the verification page.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 4. Deploy to Railway (Recommended)
 
-### `npm test`
+Since you're already using Railway for your backend, this is the easiest option:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### Option A: Deploy via Railway CLI
+1. Install Railway CLI: `npm i -g @railway/cli`
+2. Login: `railway login`
+3. Initialize: `railway init`
+4. Deploy: `railway up`
 
-### `npm run build`
+#### Option B: Deploy via Railway Dashboard
+1. Push your code to GitHub
+2. Go to [railway.app](https://railway.app)
+3. Click "New Project" → "Deploy from GitHub repo"
+4. Select your repository
+5. Railway will automatically detect it's a React app and deploy it
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 5. Alternative: Deploy to Vercel
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### Option A: Deploy via Vercel CLI
+1. Install Vercel CLI: `npm i -g vercel`
+2. Run: `vercel`
+3. Follow the prompts to deploy
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### Option B: Deploy via Vercel Dashboard
+1. Push your code to GitHub
+2. Go to [vercel.com/new](https://vercel.com/new)
+3. Import your GitHub repository
+4. Deploy automatically
 
-### `npm run eject`
+### 6. Update Your Backend
+After deployment, you'll get a URL like:
+- Railway: `https://addlife-verify-web-production.up.railway.app`
+- Vercel: `https://addlife-verify-web.vercel.app`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Update your backend's `.env` file:
+```
+VERIFICATION_WEB_URL=https://your-deployed-url.com
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 7. Update Email Template
+In your backend, update the verification email template to use the new URL:
+```
+https://your-deployed-url.com/verify-email?token=${token}
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## How It Works
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1. User receives verification email with link
+2. User clicks link → goes to your verification web app
+3. Web app reads token from URL
+4. Web app calls your backend API: `/api/users/verify-email?token=${token}`
+5. Shows success/error message to user
 
-## Learn More
+## Files Structure
+- `src/VerifyEmail.js` - Main verification component
+- `src/App.js` - App wrapper
+- `public/index.html` - HTML template
+- `package.json` - Dependencies and scripts
+- `railway.json` - Railway deployment configuration
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Customization
+- Update the styling in `VerifyEmail.js`
+- Change the title in `public/index.html`
+- Modify success/error messages as needed
