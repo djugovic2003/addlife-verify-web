@@ -11,9 +11,18 @@ export default function VerifyEmail() {
       setMessage('No verification token provided.');
       return;
     }
-    fetch(`https://addlife-production.up.railway.app` + token)
-      .then(res => res.json())
+    
+    console.log('Attempting to verify token:', token);
+    console.log('Backend URL:', 'https://addlife-production.up.railway.app/api/users/verify-email?token=' + token);
+    
+    fetch('https://addlife-production.up.railway.app/api/users/verify-email?token=' + token)
+      .then(res => {
+        console.log('Response status:', res.status);
+        console.log('Response headers:', res.headers);
+        return res.json();
+      })
       .then(data => {
+        console.log('Response data:', data);
         if (data.message) {
           setStatus('success');
           setMessage(data.message);
@@ -22,9 +31,10 @@ export default function VerifyEmail() {
           setMessage(data.error || 'Verification failed.');
         }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error('Fetch error:', error);
         setStatus('error');
-        setMessage('Verification failed.');
+        setMessage('Verification failed. Please check the console for details.');
       });
   }, [token]);
 
@@ -41,6 +51,9 @@ export default function VerifyEmail() {
       {status === 'error' && (
         <>
           <p style={{ color: 'red' }}>{message}</p>
+          <p style={{ fontSize: '12px', marginTop: '10px' }}>
+            Check the browser console (F12) for more details.
+          </p>
         </>
       )}
     </div>
