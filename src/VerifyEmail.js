@@ -8,33 +8,33 @@ export default function VerifyEmail() {
   useEffect(() => {
     if (!token) {
       setStatus('error');
-      setMessage('No verification token provided.');
+      setMessage('No verification token provided. If you have already verified your email, you can log in.');
       return;
     }
-    
-    console.log('Attempting to verify token:', token);
-    console.log('Backend URL:', 'https://addlife-production.up.railway.app/api/users/verify-email?token=' + token);
-    
+
     fetch('https://addlife-production.up.railway.app/api/users/verify-email?token=' + token)
-      .then(res => {
-        console.log('Response status:', res.status);
-        console.log('Response headers:', res.headers);
-        return res.json();
-      })
+      .then(res => res.json())
       .then(data => {
-        console.log('Response data:', data);
         if (data.message) {
           setStatus('success');
           setMessage(data.message);
+        } else if (data.error) {
+          // Handle already verified or already used token
+          if (data.error.toLowerCase().includes('already verified') || data.error.toLowerCase().includes('already used')) {
+            setStatus('success');
+            setMessage('Your email is already verified! You can log in.');
+          } else {
+            setStatus('error');
+            setMessage(data.error || 'Verification failed.');
+          }
         } else {
           setStatus('error');
-          setMessage(data.error || 'Verification failed.');
+          setMessage('Verification failed.');
         }
       })
-      .catch((error) => {
-        console.error('Fetch error:', error);
+      .catch(() => {
         setStatus('error');
-        setMessage('Verification failed. Please check the console for details.');
+        setMessage('Verification failed. Please try again later.');
       });
   }, [token]);
 
@@ -51,9 +51,6 @@ export default function VerifyEmail() {
       {status === 'error' && (
         <>
           <p style={{ color: 'red' }}>{message}</p>
-          <p style={{ fontSize: '12px', marginTop: '10px' }}>
-            Check the browser console (F12) for more details.
-          </p>
         </>
       )}
     </div>
